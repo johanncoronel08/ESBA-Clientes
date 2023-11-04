@@ -1,5 +1,7 @@
 package app;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class App {
@@ -88,6 +90,15 @@ public class App {
 				break;
 			}
 			case "2": {
+				
+				listarClientes(app);
+				
+				continuarProceso = false;
+				
+		        scanner.close();	// No olvides cerrar el scanner cuando hayas terminado de usarlo.     
+		        System.out.println("Gracias por su visita");				
+			}			
+			case "3": {
 				continuarProceso = false;
 				
 		        scanner.close();	// No olvides cerrar el scanner cuando hayas terminado de usarlo.     
@@ -110,7 +121,8 @@ public class App {
     private static void imprimirMenuOpciones() {
     	System.out.println("Opciones:");
     	System.out.println("1 - Busqueda de cliente por DNI");
-    	System.out.println("2 - SALIR");
+    	System.out.println("2 - Listado de clientes");
+    	System.out.println("3 - SALIR");
     	System.out.println("---------------------------------------------------------------------");
     	
     	System.out.print("Seleccionar una opcion:");
@@ -142,6 +154,22 @@ public class App {
             }
     }
     
-    
+    private static void listarClientes(DescuentoCliente appAux) {
+    	List<Cliente> listaClientes = new ArrayList<>();
+    	
+    	listaClientes = appAux.listarClientes();
+    	
+    	System.out.println("Listado de clientes:");
+    	System.out.println();
+    	
+    	if (listaClientes != null) {
+	    	for (Cliente cliente : listaClientes ) {
+	        	System.out.println();
+	        	System.out.println("--- " + cliente.getDni() + "   " + cliente.getNombre());
+	        	System.out.println();		
+	    	}
+    	}
+    } 
+       
 
 }

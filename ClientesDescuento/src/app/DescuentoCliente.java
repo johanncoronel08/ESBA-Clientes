@@ -1,6 +1,8 @@
 package app;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DescuentoCliente {
@@ -41,9 +43,19 @@ public class DescuentoCliente {
     	Cliente cliente = clientes.get(dni);
     	
     	int totalCompras = 0;
-    	totalCompras = cliente.getComprasRealizadas();
     	
+    	if (cliente != null) {
+    		totalCompras = cliente.getComprasRealizadas();
+    	}
+    	    	
     	return totalCompras;
+    }
+    
+    
+    public List<Cliente> listarClientes() {
+    	List<Cliente> listaClientes = new ArrayList<>();  	
+    	
+    	return listaClientes;
     }
     
     public String buscarNombreCliente(String dni) {
@@ -56,5 +68,9 @@ public class DescuentoCliente {
     
 		return nombre;
     }
+    
+    
+    
+    
 
 }
