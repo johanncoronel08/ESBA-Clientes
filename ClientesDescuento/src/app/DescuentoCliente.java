@@ -41,7 +41,9 @@ public class DescuentoCliente {
     	Cliente cliente = clientes.get(dni);
     	
     	int totalCompras = 0;
-    	totalCompras = cliente.getComprasRealizadas();
+    	if (cliente != null) {
+    		totalCompras = cliente.getComprasRealizadas();
+    	}
     	
     	return totalCompras;
     }
