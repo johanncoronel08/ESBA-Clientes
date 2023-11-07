@@ -1,175 +1,85 @@
 package app;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class App {
 	
     public static void main(String[] args) {
-    	
-        DescuentoCliente app = new DescuentoCliente();
-        
-        // ++++++++++++++++++++++++++++++++++++++++++++++
-        // CLIENTES AGREGADOS
-        app.agregarCliente("37289962", "Jonathan Balbuena");
-        app.agregarCliente("95895201", "Johann Coronel");
-        app.agregarCliente("95895202", "Pedro Perez");
-        app.agregarCliente("95895203", "Ray Jhoel");
-        app.agregarCliente("95895204", "Jesus navas");
-        app.agregarCliente("20895204", "Maria Paredes");
-        app.agregarCliente("35895204", "Martin Palermo");
-        // ++++++++++++++++++++++++++++++++++++++++++++++
-        
-        // ++++++++++++++++++++++++++++++++++++++++++++++        
-        // Jonathan 
-        app.realizarCompra("37289962", 1450);
-     
-        
-        // Johann
-        app.realizarCompra("95895201", 1292);
-        app.realizarCompra("95895201", 2040);
-        app.realizarCompra("95895201", 1232);
-        app.realizarCompra("95895201", 3123);
-        // ++++++++++++++++++++++++++++++++++++++++++++++ 
-        
-        // Ray 
-        app.realizarCompra("95895203", 800);
-        app.realizarCompra("95895203", 790);
-        // ++++++++++++++++++++++++++++++++++++++++++++++ 
-        
-        // Jesus 
-        app.realizarCompra("95895204", 800);
-        app.realizarCompra("95895204", 400);
-        // ++++++++++++++++++++++++++++++++++++++++++++++ 
-        
-        // Maria 
-        app.realizarCompra("20895204", 1450);
-        // ++++++++++++++++++++++++++++++++++++++++++++++ 
-        
-        // Martin 
-        app.realizarCompra("35895204", 5000);
-        app.realizarCompra("35895204", 400);
-         
-        
-        Scanner scanner = new Scanner(System.in);
-        
-        boolean continuarProceso = true;
-        
-    	imprimirSaludoBienvenida();
-    	
-        while (continuarProceso) {
-        	
-        	imprimirMenuOpciones();        	
-        	String opcionMenu = scanner.nextLine();
-        	
-        	switch (opcionMenu) {
-			case "1": {
-				
-				boolean continuarBusqueda = true;
-				
-	            while (continuarBusqueda) {
-	            	buscarClientePorDNI(app);
-	            	
-		            System.out.print("Desea continuar ? (S/N) (M = Menu): ");
-		            String deseaContinuar = scanner.nextLine();
-		            
-		            if (deseaContinuar.equals("S") || deseaContinuar.equals("s")) {
-		            	continuarBusqueda = true;
-		            } else if (deseaContinuar.equals("M") || deseaContinuar.equals("m")){
-		            	continuarBusqueda = false;
-		            	continuarProceso = true;
-		            } else {
-		            	continuarBusqueda = false;
-		            	continuarProceso = false;
-		            	scanner.close();
-		            	System.out.println("Gracias por su visita");	
-		            }
-	            }			
-	            
-				break;
-			}
-			case "2": {
-				
-				listarClientes(app);
-				
-				continuarProceso = false;
-				
-		        scanner.close();	// No olvides cerrar el scanner cuando hayas terminado de usarlo.     
-		        System.out.println("Gracias por su visita");				
-			}			
-			case "3": {
-				continuarProceso = false;
-				
-		        scanner.close();	// No olvides cerrar el scanner cuando hayas terminado de usarlo.     
-		        System.out.println("Gracias por su visita");				
-			}
-			/*
-			default:
-				throw new IllegalArgumentException("Unexpected value: " + opcionMenu);
-			 */
-			}
-
-        }
-    }  
-     
-    private static void imprimirSaludoBienvenida() {
-    	System.out.println("Bienvenido al sistema de Gestion de Beneficios para clientes DISMATEL");
-    	System.out.println("---------------------------------------------------------------------");    	
-    }
-    
-    private static void imprimirMenuOpciones() {
-    	System.out.println("Opciones:");
-    	System.out.println("1 - Busqueda de cliente por DNI");
-    	System.out.println("2 - Listado de clientes");
-    	System.out.println("3 - SALIR");
-    	System.out.println("---------------------------------------------------------------------");
-    	
-    	System.out.print("Seleccionar una opcion:");
-    	System.out.println();
-    }
-    
-    
-    private static void buscarClientePorDNI(DescuentoCliente appAux) {
     	Scanner scanner = new Scanner(System.in);
     	
+    	DescuentoCliente app = new DescuentoCliente();
+        
+        ClienteRegistro.cargarClientes(app);
+        ClienteRegistro.cargarCompras(app);
+        
+        ImprimirConsola.saludoBienvenida();
+        
+        boolean continuarProceso = true;
+        while (continuarProceso) {
+        	ImprimirConsola.menuOpciones();
+        	String opcionMenu = scanner.nextLine();
+        	switch (opcionMenu) {
+				case "1":
+					boolean continuarBusqueda = true;
+		            while (continuarBusqueda) {
+		            	buscarClientePorDNI(app, scanner);
+		            	continuarBusqueda = ImprimirConsola.deseaContinuar(scanner, "buscarOtroCliente");
+		            }
+					break;
+					
+				case "2":
+                    listarClientes(app);
+                    break;			
+
+				case "3":
+                    continuarProceso = false;
+                    break;				
+			}
+        }
+        scanner.close();
+        ImprimirConsola.saludoDespedida();        
+    }  
+
+    
+    private static void buscarClientePorDNI(DescuentoCliente app, Scanner scanner) {
         System.out.print("Ingrese numero DNI: ");
         String numeroDocumento = scanner.nextLine();
 
-            boolean clienteEsAcreedorDescuento = appAux.esAcreedorDescuento(numeroDocumento);
-            int consultaCanditadCompras = appAux.consultaCantidadCompras(numeroDocumento);
+            boolean clienteEsAcreedorDescuento = app.esAcreedorDescuento(numeroDocumento);
+            int consultaCantidadCompras = app.consultaCantidadCompras(numeroDocumento);            
+            String nombreCliente = app.buscarNombreCliente(numeroDocumento);
             
-            String nombreCliente = appAux.buscarNombreCliente(numeroDocumento);
-            
+            System.out.println();
+            System.out.println("---------------------------------------------------------------------");
+            System.out.println("--- Cliente: " + nombreCliente);
+            System.out.println("--- Total en compras: $" + consultaCantidadCompras);
+
             if (clienteEsAcreedorDescuento) {
-            	System.out.println();
-            	System.out.println("--- Hola " + nombreCliente + " disfruta de un 10% de descuento en tu proxima compra.");
-            	System.out.println("--- Total en compras: $ " + consultaCanditadCompras);
-            	System.out.println();
+            	System.out.println("--- Descuento: SI");
+                System.out.println("--- ¡Disfruta de un 10% de descuento en tu próxima compra!");
             } else {
-            	System.out.println();
-            	System.out.println("Hola " + nombreCliente + " sigue comprando para disfrutar mas beneficios.");
-            	System.out.println("Total en compras: $ " + consultaCanditadCompras);
-            	System.out.println();
+            	System.out.println("--- Descuento: NO");
+                System.out.println("--- Sigue comprando para disfrutar de más beneficios.");
             }
+            System.out.println("---------------------------------------------------------------------");
+            System.out.println();
     }
     
-    private static void listarClientes(DescuentoCliente appAux) {
-    	List<Cliente> listaClientes = new ArrayList<>();
-    	
-    	listaClientes = appAux.listarClientes();
-    	
-    	System.out.println("Listado de clientes:");
-    	System.out.println();
-    	
-    	if (listaClientes != null) {
-	    	for (Cliente cliente : listaClientes ) {
-	        	System.out.println();
-	        	System.out.println("--- " + cliente.getDni() + "   " + cliente.getNombre());
-	        	System.out.println();		
-	    	}
-    	}
+    private static void listarClientes(DescuentoCliente app) {
+    	List<Cliente> listaClientes = app.listarClientes();
+    
+        if (listaClientes.isEmpty()) {
+            System.out.println("No hay clientes registrados.");
+        } else {
+            System.out.println("Listado de clientes:");
+            for (Cliente cliente : listaClientes) {
+                System.out.println("--- DNI: " + cliente.getDni());
+                System.out.println("--- Nombre: " + cliente.getNombre());
+                System.out.println("---------------------------------------------------------------------");
+                System.out.println();
+            }
+        }
     } 
        
-
 }

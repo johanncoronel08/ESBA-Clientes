@@ -27,7 +27,6 @@ public class DescuentoCliente {
     public boolean esAcreedorDescuento(String dni) {
     	
         Cliente cliente = clientes.get(dni);
-        
         if (cliente != null) {
             int comprasRealizadas = cliente.getComprasRealizadas();
   
@@ -39,21 +38,17 @@ public class DescuentoCliente {
     }
     
     public int consultaCantidadCompras(String dni) {
-    	
     	Cliente cliente = clientes.get(dni);
-    	
     	int totalCompras = 0;
-    	
     	if (cliente != null) {
     		totalCompras = cliente.getComprasRealizadas();
     	}
-    	    	
     	return totalCompras;
     }
     
     
     public List<Cliente> listarClientes() {
-    	List<Cliente> listaClientes = new ArrayList<>();  	
+    	List<Cliente> listaClientes = new ArrayList<>(clientes.values());
     	
     	return listaClientes;
     }
@@ -64,6 +59,8 @@ public class DescuentoCliente {
     	
         if (cliente != null) {
             nombre = cliente.getNombre();
+        } else {
+        	nombre = "No registrado";
         }
     
 		return nombre;
